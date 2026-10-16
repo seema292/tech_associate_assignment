@@ -1,5 +1,6 @@
 from datetime import date
 from decimal import Decimal
+from pathlib import Path
 
 import pytest
 
@@ -160,11 +161,11 @@ def test_ctrl_c_stops_the_run_and_keeps_earlier_rows(config):
 
 def _config_for_main(write_config, tmp_path, num_dates="2"):
     path = write_config("num_dates: 30", f"num_dates: {num_dates}")
-    text = open(path, encoding="utf-8").read()
+    text = Path(path).read_text(encoding="utf-8")
     text = text.replace('dir: "outputs"', f'dir: "{tmp_path}/out"')
     text = text.replace('log_dir: "logs"', f'log_dir: "{tmp_path}/logs"')
     text = text.replace("master_csv: null", f'master_csv: "{tmp_path}/out/master.csv"')
-    open(path, "w", encoding="utf-8").write(text)
+    Path(path).write_text(text, encoding="utf-8")
     return path
 
 
@@ -209,8 +210,6 @@ def test_main_returns_2_on_bad_config(tmp_path, capsys):
 
 def test_main_uses_the_real_fetcher_and_parser_when_none_are_injected(write_config, tmp_path, monkeypatch):
     """No network: BookingFetcher is replaced by a fake that serves a saved page."""
-    from pathlib import Path
-
     page = (Path(__file__).parent / "fixtures" / "hotel_A_2026-10-17.html").read_text(encoding="utf-8")
 
     class FakeFetcher:

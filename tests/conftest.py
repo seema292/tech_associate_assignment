@@ -62,15 +62,15 @@ def config(write_config):
 
 def make_row(**overrides) -> RoomRow:
     """A good 'ok' row; pass keyword arguments to change fields."""
-    fields = dict(
-        scrape_timestamp=SCRAPED_AT,
-        checkin_date=date(2026, 10, 20),
-        checkout_date=date(2026, 10, 21),
-        room_category="Deluxe Double Room",
-        rooms_available=3,
-        availability_source="room_selector",
-        min_price_inr=Decimal("2450"),
-        status="ok",
-    )
+    fields = {
+        "scrape_timestamp": SCRAPED_AT,
+        "checkin_date": date(2026, 10, 20),
+        "checkout_date": date(2026, 10, 21),
+        "room_category": "Deluxe Double Room",
+        "rooms_available": 3,
+        "availability_source": "room_selector",
+        "min_price_inr": Decimal("2450"),
+        "status": "ok",
+    }
     fields.update(overrides)
     return RoomRow(**fields)

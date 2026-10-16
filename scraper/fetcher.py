@@ -4,6 +4,7 @@ No stealth plugins, no proxies, no header tricks, no login: it opens the public
 page the way an ordinary browser would, using Playwright's own default settings.
 """
 
+import contextlib
 import logging
 import subprocess
 import sys
@@ -123,9 +124,8 @@ class BookingFetcher:
             # Booking.com sent us elsewhere (e.g. a search page): the hotel page is not there.
             raise FetchError(f"redirected away from the hotel page to {self._page.url.split('?')[0]}")
 
-        try:
-            # Wait for whichever of the two possible results appears.
+        # Wait for whichever of the two possible results appears. A timeout is not fatal:
+        # the parser decides whether what we got is a block page or an unknown page.
+        with contextlib.suppress(PlaywrightTimeout):
             self._page.wait_for_selector(f"{SEL_ROOM_TABLE}, {SEL_NO_AVAILABILITY}", state="attached")
-        except PlaywrightTimeout:
-            pass  # not fatal: the parser will decide if this is a block page or an unknown page
         return self._page.content()

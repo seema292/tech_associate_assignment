@@ -38,15 +38,15 @@ def raw_to_row(
     selector_cap: int | None,
 ) -> RoomRow:
     """Build the CSV row for one room category on one date."""
-    common = dict(
-        scrape_timestamp=scraped_at,
-        checkin_date=checkin,
-        checkout_date=checkout,
-        room_category=raw.name,
-        room_type_id=raw.room_type_id,
-        scarcity_message=raw.scarcity_text,
-        rate_plan_count=raw.rate_plan_count,
-    )
+    common = {
+        "scrape_timestamp": scraped_at,
+        "checkin_date": checkin,
+        "checkout_date": checkout,
+        "room_category": raw.name,
+        "room_type_id": raw.room_type_id,
+        "scarcity_message": raw.scarcity_text,
+        "rate_plan_count": raw.rate_plan_count,
+    }
     if not raw.is_bookable:
         return RoomRow(
             rooms_available=0,
