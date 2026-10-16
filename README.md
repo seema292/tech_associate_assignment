@@ -42,6 +42,11 @@ python main.py --config config.yaml
   docker run --rm -v "$PWD/outputs:/app/outputs" -v "$PWD/logs:/app/logs" shivvilas-scraper
   ```
 - Tests (no network needed): `python -m pytest -q`
+- Offline demo (no network, for when Booking.com blocks the machine): rebuild the CSV from
+  the saved pages committed in `samples/saved_pages/`:
+  ```bash
+  python main.py --config config.yaml --from-saved-pages samples/saved_pages
+  ```
 
 Output, per run:
 
@@ -103,11 +108,9 @@ saved, the two agreed whenever both were present. It reads only what a visitor s
 no private endpoints, and records where each number came from.
 
 **2. When could `rooms_available` be wrong, and how would someone spot it?**
-The dropdown never went above 10 in about 9 hotels, so a real count above 10 would show as
-10 (those rows have `is_capped=True`; the cap is inferred, not documented). The number is
-what Booking.com may sell for 2 adults, not the hotel's real empty rooms. A bookable room
-with no number would be reported as 1 (`bookable_min_1`); I did not see this live. Spot
-problems by filtering `is_capped=True` and looking for sudden jumps between runs.
+The dropdown never went above 10, so a true count above 10 shows as 10 (those rows are
+flagged `is_capped=True`). It is also only what Booking.com may sell, not the hotel's real
+empty rooms. Spot it by filtering `is_capped=True` and comparing a row against the live page.
 
 **3. What would break first if Booking.com changed its page?**
 The CSS selectors in `scraper/parser.py`, which are all in one block at the top, with saved
@@ -121,10 +124,9 @@ Compare consecutive runs in `master_inventory.csv` for the same `checkin_date` a
 cancellation. Trust it only when `is_capped=False`. It could also be the hotel closing a room.
 
 **5. How would you cover 50 hotels?**
-Make the hotels a list in the config and add a hotel ID column to the CSV. 50 hotels x 30
-dates is 1,500 page loads, about 75 minutes at 3 seconds each, so I would run it from a
-scheduler with a global rate limit, store rows in a database, alert on error and block
-rates, and ask whether Booking.com offers an official partner feed.
+Make the hotels a list in the config and add a hotel ID column to the CSV. At 1,500 loads
+(about 75 minutes), I would run it from a scheduler with a global rate limit, store rows in
+a database instead of CSV files, and alert on error and block rates.
 
 **6. Assumptions, and what would you do with one more day?**
 Assumptions: 30 dates means tomorrow to tomorrow+29 (`num_dates: 31` gives the other

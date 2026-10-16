@@ -9,3 +9,5 @@ recon/
 .idea/
 .vscode/
 .coverage
+
+# samples/saved_pages/ IS committed on purpose (offline demo); do not ignore it

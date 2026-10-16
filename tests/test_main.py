@@ -248,3 +248,36 @@ def test_main_returns_2_when_the_browser_cannot_start(write_config, tmp_path, mo
 
     monkeypatch.setattr(app, "BookingFetcher", BrokenFetcher)
     assert app.main(["--config", _config_for_main(write_config, tmp_path)]) == 2
+
+
+# ---------- offline mode (--from-saved-pages) ----------
+
+def test_offline_mode_builds_csv_from_saved_pages(write_config, tmp_path):
+    """The whole pipeline runs from committed pages, with no network and no browser."""
+    saved = tmp_path / "pages"
+    saved.mkdir()
+    fixtures = Path(__file__).parent / "fixtures"
+    # Map two real saved pages onto the first two stay dates (tomorrow, tomorrow+1).
+    (saved / f"{date(2026, 10, 16)}.html").write_text(
+        (fixtures / "hotel_A_2026-10-17.html").read_text(encoding="utf-8"), encoding="utf-8")
+    (saved / f"{date(2026, 10, 17)}.html").write_text(
+        (fixtures / "hotel_B_2026-10-17_noavail.html").read_text(encoding="utf-8"), encoding="utf-8")
+
+    path = _config_for_main(write_config, tmp_path)
+    original = app.local_now
+    app.local_now = lambda c: original(c).replace(year=2026, month=10, day=15)
+    try:
+        code = app.main(["--config", path, "--from-saved-pages", str(saved)])
+    finally:
+        app.local_now = original
+
+    assert code == 0
+    csv_file = next((tmp_path / "out").glob("shivvilas_inventory_*.csv"))
+    text = csv_file.read_text(encoding="utf-8")
+    assert "Superior Double Room" in text          # from the first saved page
+    assert "no_rooms_listed" in text                # from the second saved page
+
+
+def test_offline_mode_missing_folder_returns_2(write_config, tmp_path):
+    path = _config_for_main(write_config, tmp_path)
+    assert app.main(["--config", path, "--from-saved-pages", str(tmp_path / "nope")]) == 2

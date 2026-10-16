@@ -9,6 +9,7 @@ import logging
 import subprocess
 import sys
 from datetime import date
+from pathlib import Path
 from urllib.parse import urlencode
 
 from playwright.sync_api import Error as PlaywrightError
@@ -51,6 +52,63 @@ def install_browser() -> None:
     )
     if result.returncode != 0:
         raise FetchError("'playwright install chromium' failed: " + result.stderr.strip()[-300:])
+
+
+class SavedPagesFetcher:
+    """Offline stand-in for BookingFetcher: reads pages saved on disk, no network.
+
+    Used by `--from-saved-pages DIR`, so the CSV can be rebuilt from committed pages
+    (the PDF's "a sample built from a saved page" fallback for when you are blocked).
+    Each date is expected at DIR/<checkin>.html, e.g. 2026-10-17.html.
+    """
+
+    def __init__(self, directory: str | Path):
+        self._dir = Path(directory)
+
+    def __enter__(self) -> "SavedPagesFetcher":
+        if not self._dir.is_dir():
+            raise FetchError(f"saved-pages folder not found: {self._dir}")
+        return self
+
+    def __exit__(self, *exc_info) -> None:
+        return None
+
+    def fetch_page(self, config: Config, checkin: date) -> str:
+        path = self._dir / f"{checkin.isoformat()}.html"
+        try:
+            return path.read_text(encoding="utf-8")
+        except FileNotFoundError:
+            raise FetchError(f"no saved page for {checkin} (expected {path})") from None
+
+
+def trim_page(html: str) -> str:
+    """Keep only the parts the parser needs, so a saved page is small and has no personal data.
+
+    Keeps the hotel-name element, the hotel_id input, and either the room table form or
+    the no-availability notice. Drops scripts, styles, images, reviews and everything else.
+    """
+    from bs4 import BeautifulSoup
+
+    soup = BeautifulSoup(html, "html.parser")
+    name = soup.select_one("#hp_hotel_name")
+    name_html = f'<span id="hp_hotel_name">{name.get_text(strip=True) if name else ""}</span>'
+    hid = soup.select_one('input[name="hotel_id"]')
+    hid_html = f'<input name="hotel_id" value="{hid.get("value", "") if hid else ""}">'
+
+    table = soup.select_one("#hprt-table")
+    if table is not None:
+        body = (table.find_parent("form") or table)
+        for tag in body.select("script, style, noscript, svg, img, iframe, link, button, input[type=hidden]"):
+            tag.decompose()
+        middle = str(body)
+    else:
+        alerts = "".join(
+            f'<div class="bui-alert bui-alert--error">{a.get_text(" ", strip=True)}</div>'
+            for a in soup.select(".bui-alert--error")
+        )
+        box = soup.select_one(".rooms_table_noavailability")
+        middle = f'<div class="rooms_table_noavailability">{alerts}</div>' if box else alerts
+    return f"<!DOCTYPE html><html><body>{name_html}{hid_html}{middle}</body></html>"
 
 
 class BookingFetcher:

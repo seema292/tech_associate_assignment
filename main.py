@@ -10,7 +10,7 @@ from pathlib import Path
 from scraper.config import Config, ConfigError, checkout_for, load_config, local_now, stay_dates
 from scraper.display import needs_virtual_display, start_virtual_display
 from scraper.errors import BlockedError, FetchError
-from scraper.fetcher import BookingFetcher
+from scraper.fetcher import BookingFetcher, SavedPagesFetcher
 from scraper.models import RoomRow, STATUS_ERROR
 from scraper.parser import parse_page as default_parse_page
 from scraper.ratelimit import RateLimiter
@@ -88,12 +88,18 @@ def run_scrape(config: Config, fetch_page, parse_page, limiter, today: date):
 def parse_args(argv=None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Booking.com room inventory scraper")
     parser.add_argument("--config", required=True, help="path to config.yaml")
+    parser.add_argument("--from-saved-pages", metavar="DIR",
+                        help="read pages from DIR/<checkin>.html instead of the live site (offline)")
     return parser.parse_args(argv)
 
 
-def execute(config: Config, run_started, fetch_page, parse_page) -> int:
-    """Scrape every date, validate, write the CSV files, and return the exit code."""
-    limiter = RateLimiter(config.min_seconds_between_loads)
+def execute(config: Config, run_started, fetch_page, parse_page, min_gap_seconds=None) -> int:
+    """Scrape every date, validate, write the CSV files, and return the exit code.
+
+    min_gap_seconds overrides the between-load wait (0 for offline runs, which hit no site).
+    """
+    gap = config.min_seconds_between_loads if min_gap_seconds is None else min_gap_seconds
+    limiter = RateLimiter(gap)
     rows, stop_reason = run_scrape(config, fetch_page, parse_page, limiter, run_started.date())
     rows = validate_rows(rows, config.nights)
 
@@ -134,6 +140,16 @@ def main(argv=None, fetch_page=None, parse_page=None) -> int:
 
     if fetch_page is not None:
         return execute(config, run_started, fetch_page, parse_page or default_parse_page)
+
+    # Offline mode: read saved pages instead of the live site.
+    if args.from_saved_pages:
+        log.info("Offline mode: reading saved pages from %s", args.from_saved_pages)
+        try:
+            with SavedPagesFetcher(args.from_saved_pages) as fetcher:
+                return execute(config, run_started, fetcher.fetch_page, default_parse_page, min_gap_seconds=0)
+        except FetchError as exc:
+            log.error("Could not start: %s", exc)
+            return EXIT_STOPPED
 
     try:
         with BookingFetcher(config) as fetcher:
