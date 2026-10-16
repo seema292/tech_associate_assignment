@@ -197,12 +197,6 @@ the link, and test on Windows and Linux.
   Windows (Chrome), all with the same 142 rows for the stand-in hotel. Native Linux
   without Docker is untested. The code uses `pathlib`, UTF-8 files and no OS-specific
   calls.
-- **A full run was only completed on macOS.** On one Windows PC the install, config loading,
-  browser start and the stop-on-block logic worked, but Booking.com returned 403 (above), so
-  no native Windows run (`python main.py`) has completed. Docker on that same PC did complete
-  a full run a few minutes later, so the block may depend on the browser or on timing; I do
-  not know which. The code uses `pathlib`, UTF-8 files and
-  no OS-specific calls.
 - **"Listed but cannot be booked" was never seen live.** I scanned 59 hotel pages (two
   hotels, all 30 dates each, 2026-10-16) for room rows without a usable dropdown, "sold
   out"/"unavailable" wording or sold-out CSS classes inside the room table: none. On the
