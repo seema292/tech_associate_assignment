@@ -193,7 +193,9 @@ the link, and test on Windows and Linux.
   promise it works everywhere.
 - **A full run was only completed on macOS.** On one Windows PC the install, config loading,
   browser start and the stop-on-block logic worked, but Booking.com returned 403 (above), so
-  no full Windows run exists. A Linux run worked in Docker. The code uses `pathlib`, UTF-8 files and
+  no native Windows run (`python main.py`) has completed. Docker on that same PC did complete
+  a full run a few minutes later, so the block may depend on the browser or on timing; I do
+  not know which. The code uses `pathlib`, UTF-8 files and
   no OS-specific calls.
 - **"Listed but cannot be booked" was never seen live.** I scanned 59 hotel pages (two
   hotels, all 30 dates each, 2026-10-16) for room rows without a usable dropdown, "sold
@@ -222,7 +224,9 @@ with its system libraries. Chrome is not installed there, so the program logs a 
 uses Playwright's Chromium. I ran this on 2026-10-16 on Linux: 142 rows, and every column
 except the timestamp was identical to the macOS run made 23 minutes earlier. (The
 timestamps in the log lines inside the container are UTC; the CSV timestamps are IST.)
-The first image build takes a few minutes and downloads about 1 GB.
+The same image was also run by the author on a Windows PC with Docker Desktop
+(2026-10-16 14:06 IST) and gave the same result: 142 rows, 140 `ok` and 2 `no_rooms_listed`
+(12 and 13 Nov). The first image build takes a few minutes and downloads about 1 GB.
 
 ## Running it daily
 
