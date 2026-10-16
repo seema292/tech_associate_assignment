@@ -1,0 +1,45 @@
+# All inputs for the scraper live here. Change them without editing code.
+
+property:
+  # NOTE: "Hotel Shiv Vilas, Tapovan, Rishikesh" could not be found on Booking.com
+  # (see README). This is a STAND-IN property in the same neighbourhood so the
+  # whole pipeline can be shown working. To use the real hotel, change only `url`.
+  name: "Zostel Rishikesh, Tapovan (stand-in for Hotel Shiv Vilas)"
+  url: "https://www.booking.com/hotel/in/zostel-rishikesh-tapovan.en-gb.html"
+
+search:
+  start_offset_days: 1     # 1 = tomorrow
+  num_dates: 30            # 30 stay dates (tomorrow .. tomorrow+29)
+  nights: 1                # check-out = check-in + 1 day
+  adults: 2
+  rooms: 1
+  currency: "INR"          # must stay INR (CSV column is min_price_inr)
+  language: "en-gb"
+
+# India Standard Time = UTC+5:30 = 330 minutes. India has no daylight saving.
+utc_offset_minutes: 330
+
+politeness:
+  min_seconds_between_loads: 3   # assignment ground rule: never below 3
+  max_attempts_per_date: 3       # total tries per date, including the first
+  page_timeout_seconds: 45
+
+availability:
+  # Highest number the "select rooms" dropdown showed in our recon: two room
+  # types stopped at exactly 10 and none went higher. INFERRED, not documented
+  # by Booking.com. Set to null if unknown.
+  selector_cap: 10
+
+browser:
+  # false = a normal visible browser window. In our recon a headless browser was
+  # served a page that ignored the stay dates; the parser reports that as an
+  # error instead of recording wrong data. We do not disguise the browser.
+  headless: false
+  # null = Playwright's own Chromium (run `playwright install chromium` once).
+  # "chrome" = use the Google Chrome already installed on this machine.
+  channel: null
+
+output:
+  dir: "outputs"
+  master_csv: "outputs/master_inventory.csv"   # set to null to disable
+  log_dir: "logs"

@@ -1,0 +1,5 @@
+PyYAML==6.0.3
+playwright==1.64.0
+beautifulsoup4==4.15.0
+# tests only
+pytest==9.1.1

@@ -1,0 +1,33 @@
+2026-10-16 12:17:30,469 INFO main: Run started 2026-10-16T12:17:30+05:30, log file logs/run_20261016_1217.log
+2026-10-16 12:17:30,469 INFO main: Property: Zostel Rishikesh, Tapovan (stand-in for Hotel Shiv Vilas) | https://www.booking.com/hotel/in/zostel-rishikesh-tapovan.en-gb.html
+2026-10-16 12:17:35,737 INFO main: 2026-10-17: page loaded, no room categories listed
+2026-10-16 12:17:40,652 INFO main: 2026-10-18: 2 categories found
+2026-10-16 12:17:45,714 INFO main: 2026-10-19: 3 categories found
+2026-10-16 12:17:51,041 INFO main: 2026-10-20: 6 categories found
+2026-10-16 12:17:56,639 INFO main: 2026-10-21: 6 categories found
+2026-10-16 12:18:01,713 INFO main: 2026-10-22: 5 categories found
+2026-10-16 12:18:06,888 INFO main: 2026-10-23: 5 categories found
+2026-10-16 12:18:11,929 INFO main: 2026-10-24: 4 categories found
+2026-10-16 12:18:17,029 INFO main: 2026-10-25: 5 categories found
+2026-10-16 12:18:22,290 INFO main: 2026-10-26: 7 categories found
+2026-10-16 12:18:27,504 INFO main: 2026-10-27: 7 categories found
+2026-10-16 12:18:32,515 INFO main: 2026-10-28: 7 categories found
+2026-10-16 12:18:37,780 INFO main: 2026-10-29: 7 categories found
+2026-10-16 12:18:42,717 INFO main: 2026-10-30: 5 categories found
+2026-10-16 12:18:47,917 INFO main: 2026-10-31: 5 categories found
+2026-10-16 12:18:53,394 INFO main: 2026-11-01: 6 categories found
+2026-10-16 12:18:58,359 INFO main: 2026-11-02: 6 categories found
+2026-10-16 12:19:03,405 INFO main: 2026-11-03: 6 categories found
+2026-10-16 12:19:08,464 INFO main: 2026-11-04: 6 categories found
+2026-10-16 12:19:13,734 INFO main: 2026-11-05: 6 categories found
+2026-10-16 12:19:18,920 INFO main: 2026-11-06: 7 categories found
+2026-10-16 12:19:23,908 INFO main: 2026-11-07: 6 categories found
+2026-10-16 12:19:29,043 INFO main: 2026-11-08: 6 categories found
+2026-10-16 12:19:33,966 INFO main: 2026-11-09: 6 categories found
+2026-10-16 12:19:39,321 INFO main: 2026-11-10: 6 categories found
+2026-10-16 12:19:44,387 INFO main: 2026-11-11: 6 categories found
+2026-10-16 12:19:49,545 INFO main: 2026-11-12: 6 categories found
+2026-10-16 12:19:54,564 INFO main: 2026-11-13: 6 categories found
+2026-10-16 12:19:59,630 INFO main: 2026-11-14: 7 categories found
+2026-10-16 12:20:04,906 INFO main: 2026-11-15: 7 categories found
+2026-10-16 12:20:04,921 INFO main: Finished. 168 rows written to outputs/shivvilas_inventory_20261016_1217.csv. Status counts: {'no_rooms_listed': 1, 'ok': 167}
