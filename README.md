@@ -207,7 +207,7 @@ the link, and test on Windows and Linux.
   by a hand-written test page. Expect `sold_out` rows to be rare or absent.
 - The 10-room dropdown cap is inferred: five room types in two hotels stopped at exactly 10 and none went higher.
 - Selectors come from pages seen on 2026-10-16 and may change.
-- Tested on Python 3.15 only.
+- Tested on Python 3.12 (Windows, Linux) and 3.15 (macOS); not on 3.10, the minimum.
 - During development one of my own unit tests accidentally opened the live site for a
   few page loads (a nonexistent hotel page, at the normal 3-second spacing). That test
   was replaced by one using a fake fetcher.
