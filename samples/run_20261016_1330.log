@@ -1,0 +1,33 @@
+2026-10-16 13:30:29,284 INFO main: Run started 2026-10-16T13:30:29+05:30, log file logs/run_20261016_1330.log
+2026-10-16 13:30:29,285 INFO main: Property: Shiv Vilas Palace, Bharatpur (stand-in, NOT the Tapovan hotel) | https://www.booking.com/hotel/in/rubystone-shiv-vilas-palace.en-gb.html
+2026-10-16 13:30:36,661 INFO main: 2026-10-17: 5 categories found
+2026-10-16 13:30:42,273 INFO main: 2026-10-18: 5 categories found
+2026-10-16 13:30:47,882 INFO main: 2026-10-19: 5 categories found
+2026-10-16 13:30:53,597 INFO main: 2026-10-20: 5 categories found
+2026-10-16 13:30:59,588 INFO main: 2026-10-21: 5 categories found
+2026-10-16 13:31:05,977 INFO main: 2026-10-22: 5 categories found
+2026-10-16 13:31:12,560 INFO main: 2026-10-23: 5 categories found
+2026-10-16 13:31:19,988 INFO main: 2026-10-24: 5 categories found
+2026-10-16 13:31:26,844 INFO main: 2026-10-25: 5 categories found
+2026-10-16 13:31:32,888 INFO main: 2026-10-26: 5 categories found
+2026-10-16 13:31:38,135 INFO main: 2026-10-27: 5 categories found
+2026-10-16 13:31:43,780 INFO main: 2026-10-28: 5 categories found
+2026-10-16 13:31:48,930 INFO main: 2026-10-29: 5 categories found
+2026-10-16 13:31:54,308 INFO main: 2026-10-30: 5 categories found
+2026-10-16 13:32:00,063 INFO main: 2026-10-31: 5 categories found
+2026-10-16 13:32:05,338 INFO main: 2026-11-01: 5 categories found
+2026-10-16 13:32:10,439 INFO main: 2026-11-02: 5 categories found
+2026-10-16 13:32:16,952 INFO main: 2026-11-03: 5 categories found
+2026-10-16 13:32:23,666 INFO main: 2026-11-04: 5 categories found
+2026-10-16 13:32:29,940 INFO main: 2026-11-05: 5 categories found
+2026-10-16 13:32:36,142 INFO main: 2026-11-06: 5 categories found
+2026-10-16 13:32:41,448 INFO main: 2026-11-07: 5 categories found
+2026-10-16 13:32:46,957 INFO main: 2026-11-08: 5 categories found
+2026-10-16 13:32:52,796 INFO main: 2026-11-09: 5 categories found
+2026-10-16 13:32:57,944 INFO main: 2026-11-10: 5 categories found
+2026-10-16 13:33:04,517 INFO main: 2026-11-11: 5 categories found
+2026-10-16 13:33:09,191 INFO main: 2026-11-12: page loaded, no room categories listed
+2026-10-16 13:33:14,209 INFO main: 2026-11-13: page loaded, no room categories listed
+2026-10-16 13:33:20,064 INFO main: 2026-11-14: 5 categories found
+2026-10-16 13:33:25,419 INFO main: 2026-11-15: 5 categories found
+2026-10-16 13:33:25,439 INFO main: Finished. 142 rows written to outputs/shivvilas_inventory_20261016_1330.csv. Status counts: {'ok': 140, 'no_rooms_listed': 2}

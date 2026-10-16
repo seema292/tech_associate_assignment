@@ -2,10 +2,11 @@
 
 property:
   # NOTE: "Hotel Shiv Vilas, Tapovan, Rishikesh" could not be found on Booking.com
-  # (see README). This is a STAND-IN property in the same neighbourhood so the
-  # whole pipeline can be shown working. To use the real hotel, change only `url`.
-  name: "Zostel Rishikesh, Tapovan (stand-in for Hotel Shiv Vilas)"
-  url: "https://www.booking.com/hotel/in/zostel-rishikesh-tapovan.en-gb.html"
+  # (see README). This is a STAND-IN with a similar name, in a DIFFERENT city
+  # (Bharatpur, Rajasthan), so the whole pipeline can be shown working on real data.
+  # To use the real hotel, change only `url`.
+  name: "Shiv Vilas Palace, Bharatpur (stand-in, NOT the Tapovan hotel)"
+  url: "https://www.booking.com/hotel/in/rubystone-shiv-vilas-palace.en-gb.html"
 
 search:
   start_offset_days: 1     # 1 = tomorrow

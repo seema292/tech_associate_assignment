@@ -17,13 +17,17 @@ sample run in this repository is for a different property. What I checked on
   browser, so this looks like a page that no longer exists, but I cannot prove that.
 - Searching "Tapovan, Rishikesh" (26 results) and "Hotel Shiv Vilas Tapovan Rishikesh"
   (25 results) did not list it. Searching "Shiv Vilas" in the site's search box offered
-  only **Shiv Vilas Palace in Bharatpur, Rajasthan** (a different hotel, not used).
+  only **Shiv Vilas Palace in Bharatpur, Rajasthan** (a different hotel, see below).
 - The hotel does appear on Agoda, Hotels.com and Expedia, but not (any more) on Booking.com
   as far as I could find.
 
-I therefore used **Zostel Rishikesh, Tapovan** (hotel ID 13267313), a real property in
-Tapovan, as a stand-in, so the whole pipeline is shown working on real data. To point
-the program at the right hotel, change only `property.url` in `config.yaml`. The output
+I therefore used **Shiv Vilas Palace in Bharatpur, Rajasthan** (Booking.com slug
+`rubystone-shiv-vilas-palace`) as a stand-in. It is a **different hotel in a different
+city** (about 280 km from Rishikesh) that only shares part of the name; it is used purely
+so the whole pipeline is shown working on real data. The parser was also checked against
+two Rishikesh-area hotels (Zostel Rishikesh, Tapovan and Tripli Hotels Sukritham), whose
+saved pages are the test fixtures. To point the program at the right hotel, change only
+`property.url` in `config.yaml`. The output
 file name keeps the required `shivvilas_inventory_` prefix.
 
 ## Setup and run (Windows, macOS, Linux)
@@ -62,8 +66,12 @@ Outputs:
 Exit code: `0` clean, `1` finished but some rows have `status=error`, `2` blocked,
 interrupted or bad config.
 
-A sample real run is in `samples/` (stand-in property, 2026-10-16): 30 dates, 168 rows,
-167 `ok` and 1 `no_rooms_listed` (17 Oct was sold out).
+A sample real run is in `samples/` (stand-in property in Bharatpur, 2026-10-16 13:30 IST):
+30 dates, 142 rows: 140 `ok` and 2 `no_rooms_listed` (12 and 13 Nov had no availability).
+Of the `ok` rows, 112 use `room_selector` and 28 use `scarcity_message`; 84 are flagged
+`is_capped=True` (dropdown at its apparent limit of 10). The 14 Nov rows were compared
+with the live page and matched (five categories; dropdown maxima 10, 10, 10, 2, 8; "We have
+2 left" on the Suite).
 
 Tests (no network needed):
 
@@ -192,7 +200,7 @@ the link, and test on Windows and Linux.
   out"/"unavailable" wording or sold-out CSS classes inside the room table: none. On the
   live site a room type that is sold out simply disappears from the table (for example 2
   of 7 types remained on 18 Oct), and a date with nothing left shows a "We have no
-  availability" notice and no table (`no_rooms_listed`, seen live on 17 Oct). The
+  availability" notice and no table (`no_rooms_listed`, seen live on 17 Oct at another hotel, and on 12 and 13 Nov in the sample). The
   `sold_out` status is still implemented for the PDF's definition, but it is covered only
   by a hand-written test page. Expect `sold_out` rows to be rare or absent.
 - The 10-room dropdown cap is inferred: five room types in two hotels stopped at exactly 10 and none went higher.
