@@ -42,7 +42,8 @@ python main.py --config config.yaml
 The first run downloads Playwright's Chromium automatically (about 150 MB, one time) and
 says so in the log. Runs take about 2.5 minutes: 30 page loads, at least 3 seconds apart.
 
-- **Windows / macOS:** a normal browser window opens and closes by itself.
+- **Windows / macOS:** your installed Google Chrome opens (minimised) and closes by itself;
+  if Chrome is not installed, Playwright's own Chromium is downloaded and used.
 - **Linux with a screen:** same.
 - **Linux without a screen (server):** the program notices there is no display and
   restarts itself inside `xvfb-run` (a virtual screen) if it is installed
@@ -163,7 +164,7 @@ Assumptions: 30 dates means tomorrow to tomorrow+29 (`num_dates: 31` gives the o
 reading); "today" and timestamps are in IST; price is the lowest price shown before taxes
 and charges; "3 attempts" means 3 tries in total per date; the stand-in property
 described above. With one more day: confirm the dropdown cap with a larger hotel, see
-what a truly listed-but-unbookable room looks like (I only have a hand-made test page
+check a busier hotel for a listed-but-unbookable room (I only have a hand-made test page
 for that branch), try the real Shiv Vilas page again or ask the assignment contact for
 the link, and test on Windows and Linux.
 
@@ -175,11 +176,25 @@ the link, and test on Windows and Linux.
   detects this and reports `error`, and I did not try to disguise the browser. So the
   default is `headless: false`, which needs a screen; on Linux servers the program uses
   `xvfb-run` for a virtual one.
-- **Only tested on macOS.** Windows and Linux are untested; the code uses
-  `pathlib`, UTF-8 files and no OS-specific calls, so I expect them to work.
-- The "listed but cannot be booked" (`sold_out`) branch is covered by a hand-written
-  test page, because I never saw such a room on the live site; fully sold-out dates
-  (no table at all) were seen live and become `no_rooms_listed`.
+- **Blocked on one Windows machine.** A run on a Windows PC using Playwright's own Chromium
+  got HTTP 403 on the first page, although the same URL opened normally in the user's
+  Chrome. The program did what the ground rules ask: it stopped, logged
+  `BLOCKED ... HTTP 403`, wrote the (empty) CSV and did not retry. I did not try to get
+  around it. The default browser is now the installed Chrome (`browser.channel: "chrome"`).
+  Whether Booking.com accepts a given machine or network is its decision, so I cannot
+  promise it works everywhere.
+- **A full run was only completed on macOS.** On one Windows PC the install, config loading,
+  browser start and the stop-on-block logic worked, but Booking.com returned 403 (above), so
+  no full Windows run exists. Linux is untested. The code uses `pathlib`, UTF-8 files and
+  no OS-specific calls.
+- **"Listed but cannot be booked" was never seen live.** I scanned 59 hotel pages (two
+  hotels, all 30 dates each, 2026-10-16) for room rows without a usable dropdown, "sold
+  out"/"unavailable" wording or sold-out CSS classes inside the room table: none. On the
+  live site a room type that is sold out simply disappears from the table (for example 2
+  of 7 types remained on 18 Oct), and a date with nothing left shows a "We have no
+  availability" notice and no table (`no_rooms_listed`, seen live on 17 Oct). The
+  `sold_out` status is still implemented for the PDF's definition, but it is covered only
+  by a hand-written test page. Expect `sold_out` rows to be rare or absent.
 - The 10-room dropdown cap is inferred: five room types in two hotels stopped at exactly 10 and none went higher.
 - Selectors come from pages seen on 2026-10-16 and may change.
 - Tested on Python 3.15 only.

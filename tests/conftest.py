@@ -33,6 +33,7 @@ availability:
   selector_cap: null
 browser:
   headless: true
+  start_minimized: false
   channel: null
 output:
   dir: "outputs"

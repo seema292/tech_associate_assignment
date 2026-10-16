@@ -61,23 +61,37 @@ class BookingFetcher:
         self._browser = None
         self._page = None
 
-    def _launch(self):
+    def _launch(self, channel: str | None):
+        args = ["--start-minimized"] if self._config.start_minimized else []
         return self._playwright.chromium.launch(
             headless=self._config.headless,
-            channel=self._config.browser_channel,  # None = Playwright's own Chromium
+            channel=channel,  # None = Playwright's own Chromium
+            args=args,
         )
+
+    def _start_browser(self):
+        """Start the configured browser; fall back to Playwright's Chromium if Chrome is absent."""
+        channel = self._config.browser_channel
+        if channel:
+            try:
+                return self._launch(channel)
+            except PlaywrightError as exc:
+                if "is not found" not in str(exc):
+                    raise
+                log.warning("Browser '%s' is not installed; using Playwright's Chromium.", channel)
+        try:
+            return self._launch(None)
+        except PlaywrightError as exc:
+            if "Executable doesn't exist" not in str(exc):
+                raise
+        # First run on a new machine: Playwright's Chromium has not been downloaded yet.
+        install_browser()
+        return self._launch(None)
 
     def __enter__(self) -> "BookingFetcher":
         self._playwright = sync_playwright().start()
         try:
-            try:
-                self._browser = self._launch()
-            except PlaywrightError as exc:
-                # First run on a new machine: the browser has not been downloaded yet.
-                if "Executable doesn't exist" not in str(exc) or self._config.browser_channel:
-                    raise
-                install_browser()
-                self._browser = self._launch()
+            self._browser = self._start_browser()
         except (PlaywrightError, FetchError) as exc:
             self._playwright.stop()
             raise FetchError(f"could not start the browser: {exc}") from None

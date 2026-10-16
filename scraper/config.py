@@ -32,6 +32,7 @@ class Config:
     page_timeout_seconds: float
     selector_cap: int | None
     headless: bool
+    start_minimized: bool
     browser_channel: str | None
     output_dir: str
     master_csv: str | None
@@ -120,6 +121,7 @@ def load_config(path: str | Path) -> Config:
         page_timeout_seconds=_require(data, "politeness", "page_timeout_seconds", number),
         selector_cap=_optional(data, "availability", "selector_cap", int),
         headless=_require(data, "browser", "headless", bool),
+        start_minimized=_require(data, "browser", "start_minimized", bool),
         browser_channel=_optional(data, "browser", "channel", str),
         output_dir=_require(data, "output", "dir", str),
         master_csv=_optional(data, "output", "master_csv", str),

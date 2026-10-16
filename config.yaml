@@ -31,13 +31,18 @@ availability:
   selector_cap: 10
 
 browser:
-  # false = a normal visible browser window. In our recon a headless browser was
-  # served a page that ignored the stay dates; the parser reports that as an
-  # error instead of recording wrong data. We do not disguise the browser.
+  # false = a normal browser window. In our recon a headless browser was served a
+  # page that ignored the stay dates, and on one Windows machine Playwright's own
+  # Chromium got HTTP 403. The program reports such pages as errors/blocks instead
+  # of recording wrong data. We do not disguise the browser.
   headless: false
-  # null = Playwright's own Chromium (run `playwright install chromium` once).
-  # "chrome" = use the Google Chrome already installed on this machine.
-  channel: null
+  # Start the window minimised so it stays out of the way (best effort; some
+  # systems ignore it). It is still an ordinary visible browser.
+  start_minimized: true
+  # "chrome" = the Google Chrome installed on this machine (falls back to
+  #            Playwright's own Chromium, downloaded automatically, if Chrome is missing)
+  # null     = always use Playwright's own Chromium
+  channel: "chrome"
 
 output:
   dir: "outputs"
