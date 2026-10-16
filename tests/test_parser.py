@@ -147,3 +147,11 @@ def test_synthetic_room_row_without_a_name_is_a_parse_error():
     html = SYNTHETIC_UNBOOKABLE.replace('data-room-id="900">Sold', 'data-room-id="901">Sold')
     with pytest.raises(ParseError, match="no name"):
         parse_page(html)
+
+
+def test_dropdown_value_that_looks_like_a_digit_but_is_not_one_is_ignored():
+    """'²'.isdigit() is True but int('²') raises; such a value must not crash the parser."""
+    html = SYNTHETIC_UNBOOKABLE.replace('<option value="0">0</option>', '<option value="²">2</option>')
+    (room,) = parse_page(html)
+    assert room.selector_max is None
+    assert room.is_bookable is False

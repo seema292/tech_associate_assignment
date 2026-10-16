@@ -61,7 +61,7 @@ def _dropdown_max(row: Tag) -> int | None:
     select = row.select_one(SEL_DROPDOWN)
     if select is None:
         return None
-    values = [int(o["value"]) for o in select.find_all("option") if o.get("value", "").isdigit()]
+    values = [int(o["value"]) for o in select.find_all("option") if o.get("value", "").isdecimal()]
     return max(values) if values else None
 
 
