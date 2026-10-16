@@ -54,8 +54,8 @@ says so in the log. Runs take about 2.5 minutes: 30 page loads, at least 3 secon
   libraries once: `playwright install-deps chromium` (needs sudo).
 
 Developed on macOS with Python 3.15; a full run also worked on Linux (Python 3.12) inside
-the Docker image below. The syntax is 3.10-compatible. A full Windows run was not achieved
-(see Limitations).
+the Docker image below. The syntax is 3.10-compatible. A native Windows run
+also worked (see Limitations).
 
 Outputs:
 
@@ -184,13 +184,19 @@ the link, and test on Windows and Linux.
   detects this and reports `error`, and I did not try to disguise the browser. So the
   default is `headless: false`, which needs a screen; on Linux servers the program starts
   its own Xvfb virtual screen.
-- **Blocked on one Windows machine.** A run on a Windows PC using Playwright's own Chromium
-  got HTTP 403 on the first page, although the same URL opened normally in the user's
-  Chrome. The program did what the ground rules ask: it stopped, logged
+- **One 403 on Windows, then success.** A first run on a Windows PC using Playwright's own
+  Chromium got HTTP 403 on the first page, although the same URL opened normally in the
+  user's Chrome. The program did what the ground rules ask: it stopped, logged
   `BLOCKED ... HTTP 403`, wrote the (empty) CSV and did not retry. I did not try to get
-  around it. The default browser is now the installed Chrome (`browser.channel: "chrome"`).
-  Whether Booking.com accepts a given machine or network is its decision, so I cannot
+  around it. After the default became the installed Chrome (`browser.channel: "chrome"`),
+  the same PC completed a full native run (14:18 IST: 142 rows, 140 `ok`, 2
+  `no_rooms_listed`), and Docker on it did too. I do not know whether the browser or the
+  timing caused the 403, and Booking.com may block a machine or network again; I cannot
   promise it works everywhere.
+- **Completed full runs:** macOS (Chrome), Linux in Docker, Windows in Docker and native
+  Windows (Chrome), all with the same 142 rows for the stand-in hotel. Native Linux
+  without Docker is untested. The code uses `pathlib`, UTF-8 files and no OS-specific
+  calls.
 - **A full run was only completed on macOS.** On one Windows PC the install, config loading,
   browser start and the stop-on-block logic worked, but Booking.com returned 403 (above), so
   no native Windows run (`python main.py`) has completed. Docker on that same PC did complete
