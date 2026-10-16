@@ -26,9 +26,9 @@ politeness:
   page_timeout_seconds: 45
 
 availability:
-  # Highest number the "select rooms" dropdown showed in our recon: two room
-  # types stopped at exactly 10 and none went higher. INFERRED, not documented
-  # by Booking.com. Set to null if unknown.
+  # Highest number the "select rooms" dropdown showed in our recon: across 9
+  # hotels it reached exactly 10 many times and never went higher. INFERRED, not
+  # documented by Booking.com. Set to null if unknown.
   selector_cap: 10
 
 browser:

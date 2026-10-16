@@ -135,7 +135,7 @@ because it reads only what a visitor sees, needs no private endpoints, and recor
 source each number came from.
 
 **2. When could `rooms_available` be wrong, and how would someone spot it?**
-(a) The dropdown seems to stop at 10: five room types in two hotels showed exactly 10 and nothing
+(a) The dropdown seems to stop at 10: across 9 hotels many room types showed exactly 10 and nothing
 went higher, so a true count above 10 would be hidden. That is inferred from what I saw,
 not documented. Those rows have `is_capped=True`. (b) The number is what Booking.com
 is allowed to sell for 2 adults, not the hotel's real empty rooms. (c) A bookable room
@@ -197,15 +197,19 @@ the link, and test on Windows and Linux.
   Windows (Chrome), all with the same 142 rows for the stand-in hotel. Native Linux
   without Docker is untested. The code uses `pathlib`, UTF-8 files and no OS-specific
   calls.
-- **"Listed but cannot be booked" was never seen live.** I scanned 59 hotel pages (two
-  hotels, all 30 dates each, 2026-10-16) for room rows without a usable dropdown, "sold
+- **"Listed but cannot be booked" was never seen live.** I scanned 86 hotel pages with a room
+  table (8 hotels, 2026-10-16) for room rows without a usable dropdown, "sold
   out"/"unavailable" wording or sold-out CSS classes inside the room table: none. On the
   live site a room type that is sold out simply disappears from the table (for example 2
   of 7 types remained on 18 Oct), and a date with nothing left shows a "We have no
   availability" notice and no table (`no_rooms_listed`, seen live on 17 Oct at another hotel, and on 12 and 13 Nov in the sample). The
   `sold_out` status is still implemented for the PDF's definition, but it is covered only
   by a hand-written test page. Expect `sold_out` rows to be rare or absent.
-- The 10-room dropdown cap is inferred: five room types in two hotels stopped at exactly 10 and none went higher.
+- **The 10-room dropdown cap is inferred, not documented.** It is supported by a second
+  scan (2026-10-16, 6 more Rishikesh hotels, 5 dates each: 126 room-type observations):
+  the highest dropdown value was 10, it was reached 19 times, and nothing went above 10.
+  Together with the stand-in hotel and the first two hotels, that is 9 hotels in total
+  with no value above 10. A true count above 10 would still look like 10.
 - Selectors come from pages seen on 2026-10-16 and may change.
 - Tested on Python 3.12 (Windows, Linux) and 3.15 (macOS); not on 3.10, the minimum.
 - During development one of my own unit tests accidentally opened the live site for a
