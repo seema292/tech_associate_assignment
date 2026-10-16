@@ -8,7 +8,7 @@ from datetime import date
 from pathlib import Path
 
 from scraper.config import Config, ConfigError, checkout_for, load_config, local_now, stay_dates
-from scraper.display import needs_virtual_display, restart_under_xvfb
+from scraper.display import needs_virtual_display, start_virtual_display
 from scraper.errors import BlockedError, FetchError
 from scraper.fetcher import BookingFetcher
 from scraper.models import RoomRow, STATUS_ERROR
@@ -121,10 +121,10 @@ def main(argv=None, fetch_page=None, parse_page=None) -> int:
         return EXIT_STOPPED
 
     if fetch_page is None and needs_virtual_display(config.headless):
-        print("No display found: restarting inside xvfb (virtual screen).", file=sys.stderr)
-        if not restart_under_xvfb():
-            print("No display and xvfb-run is not installed. On Debian/Ubuntu: "
-                  "sudo apt install xvfb xauth   (or run on a machine with a screen).", file=sys.stderr)
+        print("No display found: starting a virtual screen (Xvfb).", file=sys.stderr)
+        if not start_virtual_display():
+            print("No display and Xvfb could not be started. On Debian/Ubuntu: "
+                  "sudo apt install xvfb   (or run on a machine with a screen).", file=sys.stderr)
             return EXIT_STOPPED
 
     run_started = local_now(config)

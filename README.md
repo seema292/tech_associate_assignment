@@ -49,13 +49,13 @@ says so in the log. Runs take about 2.5 minutes: 30 page loads, at least 3 secon
 - **Windows / macOS:** your installed Google Chrome opens (minimised) and closes by itself;
   if Chrome is not installed, Playwright's own Chromium is downloaded and used.
 - **Linux with a screen:** same.
-- **Linux without a screen (server):** the program notices there is no display and
-  restarts itself inside `xvfb-run` (a virtual screen) if it is installed
-  (`sudo apt install xvfb xauth`). A fresh Linux machine may also need Chromium's system
+- **Linux without a screen (server):** the program notices there is no display and starts
+  its own virtual screen (Xvfb) if it is installed (`sudo apt install xvfb`). A fresh Linux machine may also need Chromium's system
   libraries once: `playwright install-deps chromium` (needs sudo).
 
-Developed and tested on macOS with Python 3.15. The syntax is 3.10-compatible. I could not
-test Windows or Linux from here, so those are untested (see Limitations).
+Developed on macOS with Python 3.15; a full run also worked on Linux (Python 3.12) inside
+the Docker image below. The syntax is 3.10-compatible. A full Windows run was not achieved
+(see Limitations).
 
 Outputs:
 
@@ -182,8 +182,8 @@ the link, and test on Windows and Linux.
 - **Headless mode does not work.** In my test both headless modes (old and new) were
   served a page that dropped the stay dates; a normal visible browser worked. The program
   detects this and reports `error`, and I did not try to disguise the browser. So the
-  default is `headless: false`, which needs a screen; on Linux servers the program uses
-  `xvfb-run` for a virtual one.
+  default is `headless: false`, which needs a screen; on Linux servers the program starts
+  its own Xvfb virtual screen.
 - **Blocked on one Windows machine.** A run on a Windows PC using Playwright's own Chromium
   got HTTP 403 on the first page, although the same URL opened normally in the user's
   Chrome. The program did what the ground rules ask: it stopped, logged
@@ -193,7 +193,7 @@ the link, and test on Windows and Linux.
   promise it works everywhere.
 - **A full run was only completed on macOS.** On one Windows PC the install, config loading,
   browser start and the stop-on-block logic worked, but Booking.com returned 403 (above), so
-  no full Windows run exists. Linux is untested. The code uses `pathlib`, UTF-8 files and
+  no full Windows run exists. A Linux run worked in Docker. The code uses `pathlib`, UTF-8 files and
   no OS-specific calls.
 - **"Listed but cannot be booked" was never seen live.** I scanned 59 hotel pages (two
   hotels, all 30 dates each, 2026-10-16) for room rows without a usable dropdown, "sold
@@ -209,6 +209,20 @@ the link, and test on Windows and Linux.
 - During development one of my own unit tests accidentally opened the live site for a
   few page loads (a nonexistent hotel page, at the normal 3-second spacing). That test
   was replaced by one using a fake fetcher.
+
+## Docker (optional)
+
+```bash
+docker build -t shivvilas-scraper .
+docker run --rm -v "$PWD/outputs:/app/outputs" -v "$PWD/logs:/app/logs" shivvilas-scraper
+```
+
+The image is `python:3.12-slim` plus `xvfb`, the Python packages and Playwright's Chromium
+with its system libraries. Chrome is not installed there, so the program logs a warning and
+uses Playwright's Chromium. I ran this on 2026-10-16 on Linux: 142 rows, and every column
+except the timestamp was identical to the macOS run made 23 minutes earlier. (The
+timestamps in the log lines inside the container are UTC; the CSV timestamps are IST.)
+The first image build takes a few minutes and downloads about 1 GB.
 
 ## Running it daily
 
