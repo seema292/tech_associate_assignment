@@ -21,14 +21,47 @@ on real data. To use the right hotel, change `property.url` in `config.yaml` and
 
 ## Setup and run
 
-Python 3.10 or newer.
+Needs Python 3.10 or newer and Google Chrome installed (if Chrome is missing, the program
+downloads Playwright's Chromium by itself on the first run). Pick your operating system.
 
-```bash
+### Windows (PowerShell)
+
+```powershell
+cd path\to\tech_associate_assignment
 python -m venv .venv
-source .venv/bin/activate          # Windows: .venv\Scripts\activate
+.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 python main.py --config config.yaml
 ```
+
+If PowerShell blocks the activate script, run this once, then activate again:
+`Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`. Or use Command Prompt (cmd) with
+`.venv\Scripts\activate`.
+
+### macOS
+
+```bash
+cd path/to/tech_associate_assignment
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python main.py --config config.yaml
+```
+
+### Linux
+
+```bash
+cd path/to/tech_associate_assignment
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python main.py --config config.yaml
+```
+
+On a desktop Linux (with a screen) that is all. On a server with no screen, install the
+virtual-screen tool first and, the first time, Chromium's system libraries:
+`sudo apt install xvfb` and `playwright install-deps chromium`. The program then starts
+its own virtual screen automatically.
 
 - A browser window opens (minimised) and closes by itself. A run takes about 3 minutes.
 - It uses the Google Chrome installed on the machine. If there is none, Playwright's
